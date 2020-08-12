@@ -3,6 +3,7 @@
 An automatic page turner! (Intended for pianists, but perhaps there are other use cases?)
 
 Instructions: 
+
 0. Download the facial landmarks detector and place in root folder. Install all dependencies (imutils, opencv-python, keyboard, shlex).
 1. Call the script in Terminal ("python3 turn_pages.py"), 
 2. Open your music score in Adobe Acrobat. Alternatively, you can also let the program open scores for you using set_up_score().
