@@ -67,7 +67,3 @@ class TurnDetector:
             cv2.rectangle(frame, (face.left(), face.bottom()), (face.right(), face.top()),
 			(0, 0, 255), 2)
         cv2.imshow("Frame", frame)
-        
-    def is_eye_open(self, eye):
-        return ratio(eye) > self.eye_ratio_thresh
-
