@@ -1,18 +1,23 @@
+import imutils
+import numpy as np
+import time
+import cv2
 import keyboard
 import os
 import shlex
-import time
-import cv2
-import imutils
-from imutils.video import VideoStream
-from detector import WinkDetector
+from detector import TurnDetector
 
 
 FOLDER = "/Users/timothyzhou/Desktop/piano rep/"
-FILE = "brahms 1.pdf"
+FILE = "book2/wtc book 2 peters.pdf"
 START_PAGE = 3
-MIN_WINK_TIME = 0.5 # number of seconds a wink should last before turning page
-COOLDOWN_TIME = 2 # number of seconds between consecutive detected winks
+MIN_TURN_TIME = 0.3 # number of seconds head tilt should last before turning page
+COOLDOWN_TIME= 2 # number of seconds between consecutive detected turns
+
+'''
+this function will open the score and flip to the desired first page
+only for those who are truly lazy
+'''
 
 def set_up_score(folder, file, start_page):
     path = folder + file
@@ -24,48 +29,57 @@ def set_up_score(folder, file, start_page):
         keyboard.send("right")
     return
 
+'''
+the main page-turning function!
+after calling, make sure the pdf window is active
+turn your head slightly for a second in the direction you wish the page to turn
+voila! enjoy :)
+'''
+
 def turn_pages():
-    detector = WinkDetector()
-    vs = VideoStream(src=0).start()
-    winking_left = False #whether the face was previously winking
-    winking_right = False
-    left_wink_start = -1
-    right_wink_start = -1
+    detector = TurnDetector()
+    camera = cv2.VideoCapture(0)
+    turning_left = False # whether the face was previously turning
+    turning_right = False
+    left_turn_start = -1
+    right_turn_start = -1
 
     while True:
         t = time.time()
-        frame = vs.read()
-        wink_type = detector.get_wink_type(frame)
+        _, frame = camera.read()
+        turn_type = detector.get_turn_type(frame)
         
-        if winking_left:
-            if t - left_wink_start > MIN_WINK_TIME:
+        if turning_left:
+            if t - left_turn_start > MIN_TURN_TIME:
                 keyboard.send("left")
-                winking_left = False
+                turning_left = False
                 time.sleep(COOLDOWN_TIME)
-            elif wink_type != "left":
-                winking_left = False
+            elif turn_type != "left":
+                turning_left = False
 
-        elif winking_right:
-            if t - right_wink_start > MIN_WINK_TIME:
+        elif turning_right:
+            if t - right_turn_start > MIN_TURN_TIME:
                 keyboard.send("right")
-                winking_right = False
+                turning_right = False
                 time.sleep(COOLDOWN_TIME)
-            elif wink_type != "right":
-                winking_right = False
+            elif turn_type != "right":
+                turning_right = False
 
-        elif wink_type == "left":
-            winking_left = True
-            left_wink_start = t
+        elif turn_type == "left":
+            turning_left = True
+            left_turn_start = t
 
-        elif wink_type == "right":
-            winking_right = True
-            right_wink_start = t
+        elif turn_type == "right":
+            turning_right = True
+            right_turn_start = t
             
-        if cv2.waitKey(1) = 27:
+        if cv2.waitKey(1) == 27:
             break # esc to quit
 
-    vs.stop()
+    camera.release()
     cv2.destroyAllWindows()
+
 
 set_up_score(FOLDER, FILE, START_PAGE)
 turn_pages()
+
