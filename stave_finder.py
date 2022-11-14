@@ -23,7 +23,7 @@ def plot_hlines(im, lines, color='blue'):
     plt.imshow(im)
     plt.show()
 
-def find_staff_lines(im_bin, window = 50, thresh=0.2):
+def find_staff_lines(im_bin, window = 50, thresh=0.3):
     H = im_bin.shape[0]
     staff_lines = (np.mean(im_bin, axis=1) < thresh).nonzero()[0]
     whiteness = np.mean(im_bin, axis=0)
@@ -43,7 +43,7 @@ def find_staff_lines(im_bin, window = 50, thresh=0.2):
         if (staff_lines[closest] - dif_line)**2 < window**2:
             border_lines.append(staff_lines[closest])
     plot_hlines(im_bin, border_lines, color='red')
-    return border_lines
+    return np.unique(border_lines)
 
 def find_seps(im_bin, border_lines):
     seps = []
@@ -83,8 +83,8 @@ def sep_folder(root, base_name):
     return True
 
 
-base_name = 'rigaudon'
-root = './'
+base_name = 'tarantella'
+root = 'tarantella/'
 
 sep_folder(root, base_name)
 
