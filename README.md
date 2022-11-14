@@ -1,7 +1,8 @@
 # page_turner
 
-An automatic page turner! (Intended for pianists, but perhaps there are other use cases?)
+This repo started as an automatic page-turner for pianists, but now I just put music-related things in here.
 
+## How to use the page turner
 Instructions: 
 
 0. Download the facial landmarks detector and place in root folder. Install all dependencies (imutils, opencv-python, numpy, dlib, keyboard, shlex).
