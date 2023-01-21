@@ -1,6 +1,9 @@
 # page_turner
 
-This repo started as an automatic page-turner for pianists, but now I just put music-related things in here.
+This repo started as an automatic page-turner for pianists, but now I just put music-related things in here. It includes:
+1. an automatic page-turner (useful for performing),
+2. a stave-finder for segmenting score images (useful for producing score videos),
+3. a random chord-sequence generator (useful for composing).
 
 ## How to use the page turner
 Instructions: 
