@@ -1,11 +1,23 @@
+import argparse
+import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-import cv2
 import os
 
-from PIL import Image
+parser = argparse.ArgumentParser()
+parser.add_argument('-d', '--debug', type=bool, default=False,
+                    help='debug mode plots segmented lines on score')
+parser.add_argument('-i', '--input', type=str, default='',
+                    help='directory to get images from')
+parser.add_argument('-o', '--output', type=str, default='',
+                    help='directory to save images in')
+parser.add_argument('-b', '--base', type=str, required=True,
+                    help='base name of images to segment')
+args = parser.parse_args()
 
 def plot_vlines(im, lines, color='green'):
+    if not args.debug:
+        return
     H = im.shape[0]
     for i in range(len(lines)):
         x = [lines[i], lines[i]]
@@ -15,6 +27,8 @@ def plot_vlines(im, lines, color='green'):
     plt.show()
 
 def plot_hlines(im, lines, color='blue'):
+    if not args.debug:
+        return
     W = im.shape[1]
     for i in range(len(lines)):
         x = [0, W-1]
@@ -69,22 +83,18 @@ def sep_im(file_path, count=1):
 
     staves = np.split(im, seps, axis=0)
     for i in range(len(staves)):       
-        cv2.imwrite('stave' + str(count) + '.png', staves[i])
+        cv2.imwrite(args.output + 'stave' + str(count) + '.png', staves[i])
         count += 1
     return count
 
-def sep_folder(root, base_name):
+def sep_folder():
     count = 1
-    im_names = sorted([file for file in os.listdir(root)
-                       if file.endswith('.png') and file.startswith(base_name)])
+    im_names = sorted([file for file in os.listdir(args.input)
+                       if file.endswith('.png') and file.startswith(args.base)])
     for file_name in im_names:
-        file_path = root + file_name
+        file_path = args.input + file_name
         count = sep_im(file_path, count) 
     return True
 
-
-base_name = 'tarantella'
-root = 'tarantella/'
-
-sep_folder(root, base_name)
+sep_folder()
 
